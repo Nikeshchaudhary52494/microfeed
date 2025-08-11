@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.trackly.authservice.dto.UserRequestDTO;
 import com.trackly.authservice.entity.User;
+import com.trackly.authservice.events.UserRegisteredEvent;
+import com.trackly.authservice.messaging.AuthEventPublisher;
 import com.trackly.authservice.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthEventPublisher authEventPublisher;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -35,8 +38,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         String encodedPassword = passwordEncoder.encode(userRequestDTO.getPassword());
-        User newUser = new User(userRequestDTO.getName(), userRequestDTO.getEmail(), encodedPassword);
+        User newUser = User.builder()
+                .name(userRequestDTO.getName())
+                .email(userRequestDTO.getEmail())
+                .password(encodedPassword)
+                .username(userRequestDTO.getUsername())
+                .build();
         userRepository.save(newUser);
+        UserRegisteredEvent event = UserRegisteredEvent.builder()
+                .userId(newUser.getId())
+                .email(newUser.getEmail())
+                .username(newUser.getUsername())
+                .build();
+        authEventPublisher.publishUserRegistered(event);
         return true;
     }
 }
