@@ -8,11 +8,11 @@
 		<version>3.5.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.trackly</groupId>
+	<groupId>com.microfeed</groupId>
 	<artifactId>auth-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Trackly Auth Service</name>
-	<description>Authentication microservice for Trackly</description>
+	<name>Microfeed Auth Service</name>
+	<description>Authentication microservice for Microfeed</description>
 	<url/>
 	<licenses>
 		<license/>
