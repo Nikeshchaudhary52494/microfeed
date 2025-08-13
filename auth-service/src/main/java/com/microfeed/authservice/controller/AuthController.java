@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.microfeed.authservice.dto.UserRequestDTO;
 import com.microfeed.authservice.service.UserDetailsServiceImpl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -18,7 +19,7 @@ public class AuthController {
     private final UserDetailsServiceImpl userDetailsService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody UserRequestDTO userRequestDTO) {
+    public ResponseEntity<String> signUp(@Valid @RequestBody UserRequestDTO userRequestDTO) {
         boolean isCreated = userDetailsService.signUpUser(userRequestDTO);
 
         if (!isCreated) {

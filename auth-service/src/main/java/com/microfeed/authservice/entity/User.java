@@ -43,4 +43,13 @@ public class User implements UserDetails {
         return List.of();
     }
 
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    public String getAppUsername() {
+        return this.username;
+    }
+
 }

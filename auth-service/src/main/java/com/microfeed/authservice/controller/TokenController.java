@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import com.microfeed.authservice.entity.RefreshToken;
 import com.microfeed.authservice.service.JwtService;
 import com.microfeed.authservice.service.RefreshTokenService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,13 +25,11 @@ import lombok.RequiredArgsConstructor;
 public class TokenController {
 
     private final AuthenticationManager authenticationManager;
-
     private final RefreshTokenService refreshTokenService;
-
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> AuthenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO) {
+    public ResponseEntity<?> authenticateAndGetToken(@Valid @RequestBody AuthRequestDTO authRequestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword()));
         if (authentication.isAuthenticated()) {
@@ -57,4 +57,8 @@ public class TokenController {
                 }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
     }
 
+    @GetMapping("/validate")
+    public ResponseEntity<String> validateToken() {
+        return ResponseEntity.ok("user authenticated");
+    }
 }
